@@ -1,0 +1,36 @@
+# 1. Сайт находиться в папке /var/www/eltexTest.ru/
+# 2. Сервер nginx 1.16.1 проксирующий запросы к апи на localhost:3000/.
+#    Настроен Gzip, кеш, и кеш файлов на стороне сервера.
+# 4. API сервер Node.js работающий по адресу localhost:3000/api.
+
+version: "3.7"
+services:
+  nodejs:
+    build:
+      context: .
+      dockerfile: eltexNode
+    container_name: "eltexNode"
+    ports:
+      - 3001:3000
+    restart: always
+    volumes:
+      - /var/www/eltexTest.ru/:/var/www/eltexTest.ru/
+  nginx:
+    build:
+      context: .
+      dockerfile: eltexNGINX
+    container_name: "eltexNGINX"
+    depends_on:
+      - nodejs
+    ports:
+      - 3002:80
+    volumes:
+      - /var/www/eltexTest.ru/:/var/www/eltexTest.ru/
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+
+
+
+
+
+
+
